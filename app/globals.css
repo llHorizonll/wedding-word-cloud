@@ -92,3 +92,16 @@ body {
     @apply bg-background text-foreground;
   }
 }
+
+
+.parent-container {
+  width: 700px;
+  height: 700px;
+
+  > div {
+       height: 100%;
+       width: 100%;
+       max-height: unset;
+       max-width: unset;
+  }
+}
