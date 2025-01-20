@@ -1,38 +1,78 @@
-"use client"
-import { useEffect, useRef } from 'react'
-import WordCloud from 'wordcloud'
+"use client";
+import { createClient } from "@/lib/client";
+import { useEffect, useState, useRef } from "react";
+import WordCloud from "wordcloud";
 
 interface WordCloudDisplayProps {
-  words: [string]
+  words: [string, number][];
 }
 
+//TODO: add loading when add form
+
 export default function WordCloudDisplay({ words }: WordCloudDisplayProps) {
-  const canvasRef = useRef<HTMLCanvasElement>(null)
+  const [rtWords, setRtWords] = useState(words);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const supabase = createClient();
 
   useEffect(() => {
-    if (words.length > 0 && canvasRef.current) {
-      console.log('Rendering word cloud with words:', words) // Add this line for debugging
+    const channel = supabase
+      .channel("realtime words")
+      .on(
+        "postgres_changes",
+        {
+          event: "INSERT",
+          schema: "public",
+          table: "submissions",
+        },
+        async (payload: { new: { words: string } }) => {
+          const { data: submissions, error } = await supabase.from("submissions").select("words");
+
+          if (error) {
+            console.error("Error fetching words:", error);
+            return [];
+          }
+
+          if (!submissions || submissions.length === 0) {
+            return [];
+          }
+
+          const result = Object.entries(
+            submissions.reduce((acc: Record<string, number>, item) => {
+              acc[item.words] = (acc[item.words] || 0) + 1;
+              return acc;
+            }, {})
+          );
+
+          setRtWords(result);
+        }
+      )
+      .subscribe();
+
+    if (rtWords.length > 0 && canvasRef.current) {
       WordCloud(canvasRef.current, {
-        list: words,
-        weightFactor: 15,
-        fontFamily: 'Impact',
-        color: 'random-dark',
-        rotateRatio: 0.5,
-        rotationSteps: 2,
-        backgroundColor: 'white',
-        minSize: 10,
-      })
+        list: rtWords,
+        weightFactor: (Math.pow(4, 2.3) * 800) / 1024,
+        fontFamily: "Leelawadee",
+        color: "random-dark",
+        rotateRatio: 1,
+        rotationSteps: 9,
+        backgroundColor: "white",
+        minSize: 18,
+      });
     }
-  }, [words])
+
+    return () => {
+      channel.unsubscribe();
+    };
+  }, [supabase]);
 
   if (words.length === 0) {
-    return <div className="text-center">No words available. Be the first to add some!</div>
+    return <div className="text-center">No words available. Be the first to add some!</div>;
   }
 
   return (
-    <div className="bg-white p-4 rounded-lg shadow-md w-full max-w-4xl mx-auto">
-      <canvas ref={canvasRef} width="800" height="600" className="mx-auto"></canvas>
+    <div className="bg-white p-4 rounded-lg shadow-md w-full  mx-auto">
+      <canvas ref={canvasRef} width="1024" height="960" className="mx-auto"></canvas>
     </div>
-  )
+  );
 }
-
