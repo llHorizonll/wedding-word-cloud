@@ -2,12 +2,12 @@
 import { createClient } from "@/lib/client";
 import { useEffect, useState, useRef } from "react";
 import WordCloud from "wordcloud";
+import ShineBorder from "@/components/ui/shine-border";
+import confetti from "canvas-confetti";
 
 interface WordCloudDisplayProps {
   words: [string, number][];
 }
-
-//TODO: add loading when add form
 
 export default function WordCloudDisplay({ words }: WordCloudDisplayProps) {
   const [rtWords, setRtWords] = useState(words);
@@ -43,11 +43,47 @@ export default function WordCloudDisplay({ words }: WordCloudDisplayProps) {
             }, {})
           );
 
+
+          const end = Date.now() + 3 * 1000; // 3 seconds
+          const colors = ["#a786ff", "#fd8bbc", "#eca184", "#f8deb1"];
+       
+          const frame = () => {
+            if (Date.now() > end) return;
+       
+            confetti({
+              particleCount: 2,
+              angle: 60,
+              spread: 55,
+              startVelocity: 60,
+              origin: { x: 0, y: 0.5 },
+              colors: colors,
+            });
+            confetti({
+              particleCount: 2,
+              angle: 120,
+              spread: 55,
+              startVelocity: 60,
+              origin: { x: 1, y: 0.5 },
+              colors: colors,
+            });
+       
+            requestAnimationFrame(frame);
+          };
+       
+          frame();
+
+
           setRtWords(result);
         }
       )
       .subscribe();
 
+    return () => {
+      channel.unsubscribe();
+    };
+  }, [supabase]);
+
+  useEffect(() => {
     if (rtWords.length > 0 && canvasRef.current) {
       WordCloud(canvasRef.current, {
         list: rtWords,
@@ -60,19 +96,21 @@ export default function WordCloudDisplay({ words }: WordCloudDisplayProps) {
         minSize: 18,
       });
     }
-
-    return () => {
-      channel.unsubscribe();
-    };
-  }, [supabase]);
+  }, [rtWords]);
 
   if (words.length === 0) {
     return <div className="text-center">No words available. Be the first to add some!</div>;
   }
 
   return (
-    <div className="bg-white p-4 rounded-lg shadow-md w-full  mx-auto">
-      <canvas ref={canvasRef} width="1024" height="960" className="mx-auto"></canvas>
-    </div>
+    <ShineBorder
+      className="bg-white p-4 rounded-lg shadow-md w-full mx-auto"
+      color={["#A07CFE", "#FE8FB5", "#FFBE7B"]}
+      borderWidth={2}
+    >
+     
+        <canvas ref={canvasRef} width="1024" height="960" className="mx-auto"></canvas>
+     
+    </ShineBorder>
   );
 }

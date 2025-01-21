@@ -1,8 +1,7 @@
 import { supabase } from "@/lib/supabase";
 import GiveawayWheel from "../components/GiveawayWheel";
-import PrizeSelection from "../components/PrizeSelection";
 
-async function getNames() {
+async function getWheelData() {
   try {
     const { data, error } = await supabase.from("submissions").select(`name,words`);
 
@@ -15,11 +14,14 @@ async function getNames() {
       return [];
     }
 
-    // const winner = data[Math.floor(Math.random() * data.length)];
+    const wheelData = data.map((participant) => ({
+      option: participant.name,
+      words: participant.words,
+      style: { backgroundColor: "#FFC0CB", color: "#8B0000" }, // Wedding-themed colors
+      optionSize: 1,
+    }));
 
-    // console.log(winner,'www');
-
-    return data;
+    return wheelData;
   } catch (error) {
     console.error("Error in getWords:", error);
     return [];
@@ -27,13 +29,11 @@ async function getNames() {
 }
 
 export default async function PrizePage() {
-  const nameList = await getNames();
+  const wheelData = await getWheelData();
 
   return (
     <main className="min-h-screen bg-gradient-to-b from-pink-100 to-white">
-     
-      {/* <PrizeSelection /> */}
-      <GiveawayWheel nameList={nameList} />
+      {wheelData && <GiveawayWheel wheelData={wheelData} />}
     </main>
   );
 }
