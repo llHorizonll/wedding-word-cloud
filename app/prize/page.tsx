@@ -33,7 +33,7 @@ export default async function PrizePage() {
 
   return (
     <main className="min-h-screen bg-gradient-to-b from-pink-100 to-white">
-      {wheelData && <GiveawayWheel wheelData={wheelData} />}
+      {wheelData.length > 0 && <GiveawayWheel wheelData={wheelData} />}
     </main>
   );
 }

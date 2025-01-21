@@ -78,7 +78,7 @@ export default function ClientForm({ submitWords }: { submitWords: (formData: Fo
     const sortedData = result.sort((a, b) => b[1] - a[1]);
 
     // Extract the top two most frequent values
-    const mostFrequent = sortedData.slice(0, 2).map((item) => item[0]);
+    const mostFrequent = sortedData?.slice(0, 2).map((item) => item[0]);
     const mostFrequentCustom = [...mostFrequent, "❤️❤️❤️", "🤵💕👰"];
     setMostFrequent(mostFrequentCustom);
   };

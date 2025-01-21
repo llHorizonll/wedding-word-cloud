@@ -73,28 +73,30 @@ const GiveawayWheel: React.FC<GiveawayWheelProps> = ({ wheelData }) => {
         Giveaway Prize <FaSync style={{ cursor: "pointer", display: "inline-block" }} onClick={fetchNames} />
       </h1>
       <div className="parent-container">
-        <Wheel
-          mustStartSpinning={spinning}
-          prizeNumber={prizeIndex}
-          data={wheelDataList}
-          onStopSpinning={() => {
-            const randomIndex = Math.floor(Math.random() * wheelDataList.length);
-            setPrizeIndex(randomIndex);
-            setWinner({ name: wheelDataList[randomIndex].option, words: wheelDataList[randomIndex].words });
-            setShowConfetti(true);
-            setIsDialogOpen(true);
-            setSpinning(false);
-          }}
-          outerBorderColor="#BFECFF"
-          radiusLineColor="#FF69B4"
-          textDistance={80} // เพิ่มระยะห่างของข้อความ
-          fontFamily={"Kanit"}
-          fontSize={18} // เพิ่มขนาดตัวอักษร
-          outerBorderWidth={6} // เพิ่มความหนาของขอบนอก
-          radiusLineWidth={2} // เพิ่มความหนาของเส้นรัศมี
-          innerRadius={0} // ปรับขนาดวงในของวงล้อ
-          innerBorderWidth={0} // ปรับความหนาของขอบด้านใน
-        />
+        {wheelDataList.length > 0 && (
+          <Wheel
+            mustStartSpinning={spinning}
+            prizeNumber={prizeIndex}
+            data={wheelDataList}
+            onStopSpinning={() => {
+              const randomIndex = Math.floor(Math.random() * wheelDataList.length);
+              setPrizeIndex(randomIndex);
+              setWinner({ name: wheelDataList[randomIndex].option, words: wheelDataList[randomIndex].words });
+              setShowConfetti(true);
+              setIsDialogOpen(true);
+              setSpinning(false);
+            }}
+            outerBorderColor="#BFECFF"
+            radiusLineColor="#FF69B4"
+            textDistance={80} // เพิ่มระยะห่างของข้อความ
+            fontFamily={"Kanit"}
+            fontSize={18} // เพิ่มขนาดตัวอักษร
+            outerBorderWidth={6} // เพิ่มความหนาของขอบนอก
+            radiusLineWidth={2} // เพิ่มความหนาของเส้นรัศมี
+            innerRadius={0} // ปรับขนาดวงในของวงล้อ
+            innerBorderWidth={0} // ปรับความหนาของขอบด้านใน
+          />
+        )}
       </div>
 
       <Button onClick={handleSpin} className="mt-6 bg-pink-500 hover:bg-pink-700">
