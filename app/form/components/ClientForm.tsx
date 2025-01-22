@@ -106,7 +106,7 @@ export default function ClientForm({ submitWords }: { submitWords: (formData: Fo
         {!submitted ? (
           <form onSubmit={handleSubmit}>
             <div className="space-y-6">
-              <h2 className="text-3xl font-serif text-pink-700 text-center mb-4">Wedding Celebration</h2>
+              <h2 className="text-3xl font-serif text-pink-700 text-center mb-4">Join us in congratulating</h2>
               <input
                 type="text"
                 value={name}
