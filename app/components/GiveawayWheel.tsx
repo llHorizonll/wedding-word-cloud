@@ -2,7 +2,7 @@
 import { createClient } from "@/lib/client";
 import { useState, useEffect } from "react";
 import dynamic from "next/dynamic";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { FaSync } from "react-icons/fa";
 import { Button } from "@/components/ui/button";
 
@@ -60,6 +60,8 @@ const GiveawayWheel: React.FC<GiveawayWheelProps> = ({ wheelData }) => {
   }, []);
 
   const handleSpin = () => {
+    const randomIndex = Math.floor(Math.random() * wheelDataList.length);
+    setPrizeIndex(randomIndex);
     if (spinning) return;
     setShowConfetti(false);
     setWinner(null);
@@ -79,16 +81,14 @@ const GiveawayWheel: React.FC<GiveawayWheelProps> = ({ wheelData }) => {
             prizeNumber={prizeIndex}
             data={wheelDataList}
             onStopSpinning={() => {
-              const randomIndex = Math.floor(Math.random() * wheelDataList.length);
-              setPrizeIndex(randomIndex);
-              setWinner({ name: wheelDataList[randomIndex].option, words: wheelDataList[randomIndex].words });
+              setWinner({ name: wheelDataList[prizeIndex].option, words: wheelDataList[prizeIndex].words });
               setShowConfetti(true);
               setIsDialogOpen(true);
               setSpinning(false);
             }}
             outerBorderColor="#BFECFF"
             radiusLineColor="#FF69B4"
-            textDistance={80} // เพิ่มระยะห่างของข้อความ
+            textDistance={74} // เพิ่มระยะห่างของข้อความ
             fontFamily={"Kanit"}
             fontSize={18} // เพิ่มขนาดตัวอักษร
             outerBorderWidth={6} // เพิ่มความหนาของขอบนอก
@@ -99,18 +99,22 @@ const GiveawayWheel: React.FC<GiveawayWheelProps> = ({ wheelData }) => {
         )}
       </div>
 
-      <Button onClick={handleSpin} className="mt-6 bg-pink-500 hover:bg-pink-700">
+      <Button onClick={handleSpin} className="mt-6 bg-pink-500 hover:bg-pink-700" disabled={spinning}>
         {spinning ? "Spinning..." : "Spin the Wheel"}
       </Button>
 
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <DialogContent className="bg-white rounded-lg shadow-xl text-center max-w-4xl w-[90vw]">
           <DialogHeader>
-            <DialogTitle className="text-4xl font-bold text-pink-600 mb-8">
+            <DialogTitle className="text-4xl text-center font-bold text-pink-600 mb-8">
               🎉 Congratulations {winner?.name}! 🎉
             </DialogTitle>
+
+            <DialogDescription className="mt-8 text-2xl text-center text-gray-700 px-8">
+              "{winner?.words}"
+            </DialogDescription>
           </DialogHeader>
-          <p className="mt-8 text-2xl text-gray-700 px-8">"{winner?.words}"</p>
+
           <Button onClick={() => setIsDialogOpen(false)} className="mt-8 bg-gray-500 hover:bg-gray-700 text-lg px-8">
             Close
           </Button>
