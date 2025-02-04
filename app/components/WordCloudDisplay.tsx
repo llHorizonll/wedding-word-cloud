@@ -87,13 +87,13 @@ export default function WordCloudDisplay({ words }: WordCloudDisplayProps) {
     if (rtWords.length > 0 && canvasRef.current) {
       WordCloud(canvasRef.current, {
         list: rtWords,
-        weightFactor: (Math.pow(4, 2.3) * 2200) / 1024,
+        weightFactor: (Math.pow(4, 2.3) * 900) / 1024,
         fontFamily: "Leelawadee",
         color: "random-dark",
         rotateRatio: 1,
-        rotationSteps: 12,
+        rotationSteps: 18,
         backgroundColor: "white",
-        minSize: 18,
+        minSize: 12,
       });
     }
   }, [rtWords]);
