@@ -87,11 +87,11 @@ export default function WordCloudDisplay({ words }: WordCloudDisplayProps) {
     if (rtWords.length > 0 && canvasRef.current) {
       WordCloud(canvasRef.current, {
         list: rtWords,
-        weightFactor: (Math.pow(4, 2.3) * 800) / 1024,
+        weightFactor: (Math.pow(4, 2.3) * 2600) / 1024,
         fontFamily: "Leelawadee",
         color: "random-dark",
         rotateRatio: 1,
-        rotationSteps: 9,
+        rotationSteps: 12,
         backgroundColor: "white",
         minSize: 18,
       });
@@ -109,7 +109,7 @@ export default function WordCloudDisplay({ words }: WordCloudDisplayProps) {
       borderWidth={2}
     >
      
-        <canvas ref={canvasRef} width="1024" height="960" className="mx-auto"></canvas>
+        <canvas ref={canvasRef} width="1024" height="840" className="mx-auto"></canvas>
      
     </ShineBorder>
   );
